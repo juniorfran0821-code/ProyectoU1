@@ -67,15 +67,3 @@ GROUP BY c.customer_id, c.first_name, c.last_name
 ORDER BY TotalDevoluciones DESC;
 GO
 
-
-
-SELECT
-    u.usuario_id,
-    u.nombre,
-    u.email,
-    u.rol,
-    u.customer_id,
-    u.staff_id,
-    u.activo
-FROM Usuarios u;
-GO
