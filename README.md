@@ -1,111 +1,63 @@
-# Sistema de Renta de Películas — Sakila
-
-Aplicación web desarrollada con **ASP.NET Core MVC**, **ADO.NET** y **SQL Server**, utilizando la base de datos Sakila como fuente de datos.
-
----
+# Sistema de Renta de Películas con Sakila
 
 ## Descripción
 
-Sistema de renta de películas que implementa autenticación por roles, gestión de películas e inventario, alquiler y devolución de películas, con reglas de negocio y protección de contraseñas mediante SHA-256.
+Aplicación web desarrollada con **ASP.NET Core MVC**, **ADO.NET** (Microsoft.Data.SqlClient) y **SQL Server**, que usa la base de datos **Sakila** para simular un pequeño sistema de renta de películas.
 
-Roles disponibles:
-- **Administrador**: gestiona películas, inventario y consulta alquileres.
-- **Cliente**: consulta el catálogo, alquila películas y registra devoluciones.
+Tiene dos roles:
 
----
+- **Administrador:** gestiona películas y copias del inventario, y consulta los alquileres.
+- **Cliente:** consulta el catálogo, alquila películas, revisa sus alquileres y las devuelve.
 
-## Requisitos previos
+Incluye inicio y cierre de sesión con Session, autorización por roles mediante filtros, reglas de negocio (disponibilidad, propiedad y estado del alquiler), validaciones, un reporte de las películas más alquiladas y dos retos técnicos: contraseñas protegidas con hash SHA-256 y eliminación lógica de películas (`film.activo`).
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- SQL Server (local o remoto) con la base de datos **Sakila** instalada
-- Visual Studio 2022 o superior (opcional, puede usarse VS Code)
+## Requisitos
 
----
+- .NET 10 SDK
+- SQL Server con la base de datos **Sakila** ya instalada
+- SQL Server Management Studio (SSMS) o similar para ejecutar el script
+- Visual Studio compatible con .NET 10 (opcional, también se puede usar la línea de comandos)
 
-## Configuración
+## Cómo ejecutarlo
 
-### 1. Ejecutar el script SQL
+1. **Clonar el repositorio**
 
-Ejecutar el archivo `Scripts/sakila_modificaciones.sql` sobre la base de datos Sakila en SQL Server.
+   ```bash
+   git clone https://github.com/juniorfran0821-code/ProyectoU1.git
+   cd ProyectoU1
+   ```
 
-Este script:
-- Agrega la columna `activo` a la tabla `film` (eliminación lógica).
-- Crea la tabla `Usuarios` para autenticación con hash SHA-256.
+2. **Ejecutar el script SQL.** Abrir `Script/sakila_script.sql` en SSMS y ejecutarlo sobre la base de datos `sakila`. El script agrega la columna `activo` a `film` (eliminación lógica) y crea la tabla `Usuarios`.
 
-### 2. Configurar la cadena de conexión
+3. **Revisar la cadena de conexión.** En `appsettings.json`, ajustar `SakilaConnection` si la instancia de SQL Server es distinta:
 
-Editar `appsettings.json` y ajustar `SakilaConnection` según la instancia de SQL Server:
+   ```json
+   "SakilaConnection": "Server=localhost;Database=sakila;Trusted_Connection=True;TrustServerCertificate=True;"
+   ```
 
-```json
-"ConnectionStrings": {
-  "SakilaConnection": "Server=localhost;Database=sakila;Trusted_Connection=True;TrustServerCertificate=True;"
-}
-```
+4. **Ejecutar la aplicación**
 
-Ejemplos comunes:
-- SQL Server Express: `Server=.\SQLEXPRESS;Database=sakila;...`
-- Con credenciales: `Server=localhost;Database=sakila;User Id=sa;Password=tu_password;TrustServerCertificate=True;`
+   ```bash
+   dotnet run
+   ```
 
-### 3. Ejecutar la aplicación
+   Abrir en el navegador la dirección que indique la consola (por ejemplo `https://localhost:7106`). Al arrancar por primera vez, la aplicación crea los usuarios de prueba en la tabla `Usuarios`.
 
-```bash
-dotnet run
-```
-
-Al arrancar por primera vez la aplicación inserta los usuarios de prueba en la tabla `Usuarios` con contraseñas protegidas mediante hash SHA-256.
-
----
-
-## Credenciales de prueba
+## Usuarios de prueba
 
 | Rol | Correo | Contraseña |
 |---|---|---|
 | Administrador | admin@sakila.com | Admin1234 |
 | Cliente | customer@sakila.com | Customer1234 |
 
----
+Son cuentas de prueba creadas para el proyecto. Las contraseñas se guardan como hash SHA-256, no como texto.
 
-## Estructura del proyecto
+## Estructura
 
-```
-ProyectoU1/
-├── Controllers/    # AccountController, PeliculasController, InventarioController,
-│                   # AlquilerController, ReportesController
-├── Filters/        # RolRequeridoAttribute (base), SoloAutenticadoAttribute,
-│                   # SoloAdminAttribute, SoloClienteAttribute
-├── Helpers/        # SecurityHelper (SHA-256), SessionHelper
-├── Models/         # Pelicula, Inventario, Alquiler, UsuarioSesion,
-│                   # LoginViewModel, ReportePelicula
-├── Views/          # Vistas por controlador + Shared (Layout, Partial Views)
-├── Scripts/        # sakila_modificaciones.sql
-├── wwwroot/        # CSS, JS, Bootstrap
-├── appsettings.json
-└── Program.cs      # Configuración, Session y seed de usuarios
-```
-
----
-
-## Funcionalidades implementadas
-
-- Inicio y cierre de sesión con autenticación por hash SHA-256
-- Navegación adaptada al rol del usuario
-- Restricción de acceso mediante filtros de autorización (`RolRequeridoAttribute`)
-- Catálogo de películas con disponibilidad en tiempo real
-- CRUD completo de películas (solo Administrador)
-- Gestión de inventario: agregar y eliminar copias
-- Alquiler de películas con validación de disponibilidad y transacción
-- Mis alquileres y devolución de películas
-- Reporte de las 10 películas más alquiladas
-- Eliminación lógica en `film` (campo `activo`) — Reto 2
-- Contraseñas almacenadas como hash SHA-256 — Reto 1
-- Session para mantener datos del usuario autenticado
-
----
-
-## Retos técnicos
-
-### Reto 1 — Contraseña protegida
-Las contraseñas se almacenan como hash SHA-256 en `password_hash` de la tabla `Usuarios`. Al iniciar sesión la aplicación calcula el hash de la contraseña ingresada y lo compara con el almacenado. Nunca se guarda ni compara texto plano.
-
-### Reto 2 — Eliminación lógica en `film`
-La tabla `film` utiliza el campo `activo BIT`. Al desactivar una película el registro permanece en la base de datos conservando el historial de alquileres, pero deja de aparecer en el catálogo y no puede ser alquilada. El administrador puede restaurarla desde el panel de gestión.
+- `Controllers/`: controladores (cuenta, películas, inventario, alquileres y reportes).
+- `Models/`: modelos con validaciones (DataAnnotations).
+- `Views/`: vistas Razor y Partial Views (`Views/Shared`).
+- `Filters/`: filtros de autorización por rol.
+- `Helpers/`: manejo de Session y hash de contraseñas.
+- `Script/`: script SQL con las modificaciones sobre Sakila.
+- `Program.cs`: configuración de la aplicación, Session y usuarios de prueba.
