@@ -1,0 +1,75 @@
+@{
+    int paginaActual   = ViewBag.PaginaActual;
+    int totalPaginas   = ViewBag.TotalPaginas;
+    string accion      = ViewBag.AccionPaginacion;
+    string controlador = ViewBag.ControladorPaginacion;
+
+    const int rango = 5;
+    int inicio = Math.Max(1, paginaActual - rango);
+    int fin    = Math.Min(totalPaginas, paginaActual + rango);
+}
+
+@if (totalPaginas > 1)
+{
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center flex-wrap">
+
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-controller="@controlador"
+                   asp-action="@accion"
+                   asp-route-pagina="@(paginaActual - 1)">&#8249;</a>
+            </li>
+
+            @if (inicio > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-controller="@controlador"
+                       asp-action="@accion"
+                       asp-route-pagina="1">1</a>
+                </li>
+                @if (inicio > 2)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                }
+            }
+
+            @for (int i = inicio; i <= fin; i++)
+            {
+                <li class="page-item @(i == paginaActual ? "active" : "")">
+                    <a class="page-link"
+                       asp-controller="@controlador"
+                       asp-action="@accion"
+                       asp-route-pagina="@i">@i</a>
+                </li>
+            }
+
+            @if (fin < totalPaginas)
+            {
+                @if (fin < totalPaginas - 1)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                }
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-controller="@controlador"
+                       asp-action="@accion"
+                       asp-route-pagina="@totalPaginas">@totalPaginas</a>
+                </li>
+            }
+
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link"
+                   asp-controller="@controlador"
+                   asp-action="@accion"
+                   asp-route-pagina="@(paginaActual + 1)">&#8250;</a>
+            </li>
+
+        </ul>
+    </nav>
+}

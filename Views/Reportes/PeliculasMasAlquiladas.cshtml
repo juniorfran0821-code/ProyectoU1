@@ -1,0 +1,41 @@
+@model IEnumerable<ProyectoU1.Models.ReportePelicula>
+
+@{
+    ViewData["Title"] = "Reporte: Películas más alquiladas";
+}
+
+<h2 class="mb-1">Películas más alquiladas</h2>
+<p class="text-muted mb-4">Las 10 películas con mayor número de alquileres registrados.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay datos disponibles para el reporte.</div>
+}
+else
+{
+    <div class="table-responsive" style="max-width:640px;">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Película</th>
+                    <th class="text-center">Total de alquileres</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int posicion = 1;}
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center fw-bold">@posicion</td>
+                        <td>@item.Titulo</td>
+                        <td class="text-center">
+                            <span class="badge bg-primary fs-6">@item.TotalAlquileres</span>
+                        </td>
+                    </tr>
+                    posicion++;
+                }
+            </tbody>
+        </table>
+    </div>
+}

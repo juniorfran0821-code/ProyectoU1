@@ -1,0 +1,84 @@
+@model ProyectoU1.Models.Pelicula
+
+@{
+    ViewData["Title"] = Model.Title;
+    var usuario = Context.Session.ObtenerUsuario();
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-action="Catalogo">Catálogo</a>
+        </li>
+        <li class="breadcrumb-item active">@Model.Title</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <h3 class="mb-0">@Model.Title</h3>
+    </div>
+    <div class="card-body">
+        <p class="lead">@Model.Description</p>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Clasificación</span>
+                        <strong>@(Model.Rating ?? "—")</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Año</span>
+                        <strong>@(Model.ReleaseYear?.ToString() ?? "—")</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Duración</span>
+                        <strong>@(Model.Length.HasValue ? $"{Model.Length} min" : "—")</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Tarifa de alquiler</span>
+                        <strong>$@Model.RentalRate</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Días de alquiler</span>
+                        <strong>@Model.RentalDuration días</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Costo de reemplazo</span>
+                        <strong>$@Model.ReplacementCost</strong>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
+                @if (Model.CopiasDisponibles > 0)
+                {
+                    <p class="fw-bold text-success">@Model.CopiasDisponibles copia(s) disponible(s)</p>
+                    <p class="text-muted small">de @Model.TotalCopias total(es) en inventario</p>
+                }
+                else
+                {
+                    <p class="fw-bold text-danger">Sin copias disponibles</p>
+                    <p class="text-muted small">@Model.TotalCopias copia(s) actualmente alquilada(s)</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="card-footer d-flex gap-2">
+        <a asp-action="Catalogo" class="btn btn-outline-secondary">Volver al catálogo</a>
+        @if (usuario?.Rol == "Cliente" && Model.CopiasDisponibles > 0)
+        {
+            <form asp-controller="Alquiler" asp-action="Alquilar" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="filmId" value="@Model.FilmId" />
+                <button type="submit" class="btn btn-success">Alquilar esta película</button>
+            </form>
+        }
+        @if (usuario?.Rol == "Administrador")
+        {
+            <a asp-action="Editar" asp-route-id="@Model.FilmId" class="btn btn-warning">Editar</a>
+            <a asp-action="Index" asp-controller="Inventario" asp-route-filmId="@Model.FilmId"
+               class="btn btn-outline-primary">Ver inventario</a>
+        }
+    </div>
+</div>

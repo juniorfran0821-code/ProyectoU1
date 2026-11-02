@@ -1,0 +1,76 @@
+@model IEnumerable<ProyectoU1.Models.Inventario>
+
+@{
+    ViewData["Title"] = "Inventario";
+    int filmId = ViewBag.FilmId;
+    string titulo = ViewBag.TituloPelicula;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Peliculas" asp-action="Index">Películas</a></li>
+        <li class="breadcrumb-item active">Inventario: @titulo</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Inventario — @titulo</h2>
+    <a asp-action="Agregar" asp-route-filmId="@filmId" class="btn btn-primary">Agregar copia</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">Esta película no tiene copias registradas en inventario.</div>
+}
+else
+{
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID Copia</th>
+                <th>Tienda</th>
+                <th class="text-center">Estado</th>
+                <th class="text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var copia in Model)
+            {
+                <tr>
+                    <td>#@copia.InventoryId</td>
+                    <td>Tienda @copia.StoreId</td>
+                    <td class="text-center">
+                        @if (copia.Disponible)
+                        {
+                            <span class="badge bg-success">Disponible</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Alquilada</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (copia.Disponible)
+                        {
+                            <form asp-action="Eliminar" method="post" class="d-inline"
+                                  onsubmit="return confirm('¿Eliminar esta copia del inventario?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="inventoryId" value="@copia.InventoryId" />
+                                <input type="hidden" name="filmId" value="@copia.FilmId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">No disponible</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Peliculas" asp-action="Index" class="btn btn-outline-secondary mt-2">
+    Volver a películas
+</a>

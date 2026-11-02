@@ -1,0 +1,32 @@
+@model ProyectoU1.Models.Pelicula
+
+@{
+    ViewData["Title"] = "Nueva película";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Películas</a></li>
+        <li class="breadcrumb-item active">Nueva película</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Nueva película</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Crear" method="post">
+            @Html.AntiForgeryToken()
+            @await Html.PartialAsync("_FormularioPelicula", Model)
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,46 @@
+@model ProyectoU1.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "_Layout";
+}
+
+<div class="login-wrapper">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0">Sakila Renta</h4>
+                <small>Sistema de renta de películas</small>
+            </div>
+            <div class="card-body p-4">
+                <h5 class="card-title mb-3">Iniciar sesión</h5>
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="correo@ejemplo.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Ingresar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

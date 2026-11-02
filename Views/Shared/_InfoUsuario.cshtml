@@ -1,0 +1,19 @@
+@{
+    var usuario = Context.Session.ObtenerUsuario();
+}
+
+@if (usuario != null)
+{
+    <div class="d-flex align-items-center gap-2">
+        <span class="navbar-text me-2">
+            <strong>@usuario.Nombre</strong>
+            <span class="badge @(usuario.Rol == "Administrador" ? "bg-danger" : "bg-primary") ms-1">
+                @usuario.Rol
+            </span>
+        </span>
+        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline mb-0">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-secondary btn-sm">Cerrar sesión</button>
+        </form>
+    </div>
+}

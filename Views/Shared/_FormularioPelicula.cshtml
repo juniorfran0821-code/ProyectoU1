@@ -1,0 +1,66 @@
+@model ProyectoU1.Models.Pelicula
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Rating" class="form-label"></label>
+        <select asp-for="Rating" class="form-select">
+            <option value="">— Seleccione —</option>
+            <option value="G">G</option>
+            <option value="PG">PG</option>
+            <option value="PG-13">PG-13</option>
+            <option value="R">R</option>
+            <option value="NC-17">NC-17</option>
+        </select>
+        <span asp-validation-for="Rating" class="text-danger small"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="ReleaseYear" class="form-label"></label>
+        <input asp-for="ReleaseYear" class="form-control" type="number" />
+        <span asp-validation-for="ReleaseYear" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="Length" class="form-label"></label>
+        <input asp-for="Length" class="form-control" type="number" />
+        <span asp-validation-for="Length" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="RentalDuration" class="form-label"></label>
+        <input asp-for="RentalDuration" class="form-control" type="number" />
+        <span asp-validation-for="RentalDuration" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="RentalRate" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input asp-for="RentalRate" class="form-control" step="0.01" />
+        </div>
+        <span asp-validation-for="RentalRate" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="ReplacementCost" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input asp-for="ReplacementCost" class="form-control" step="0.01" />
+        </div>
+        <span asp-validation-for="ReplacementCost" class="text-danger small"></span>
+    </div>
+</div>

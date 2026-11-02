@@ -1,0 +1,53 @@
+@model ProyectoU1.Models.Inventario
+
+@{
+    ViewData["Title"] = "Agregar copia";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Peliculas" asp-action="Index">Películas</a></li>
+        <li class="breadcrumb-item">
+            <a asp-action="Index" asp-route-filmId="@Model.FilmId">Inventario: @Model.TituloPelicula</a>
+        </li>
+        <li class="breadcrumb-item active">Agregar copia</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm" style="max-width:480px;">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Agregar copia al inventario</h5>
+    </div>
+    <div class="card-body">
+        <p class="mb-3 text-muted">
+            Película: <strong>@Model.TituloPelicula</strong>
+        </p>
+
+        <form asp-action="Agregar" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="FilmId" />
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+            <div class="mb-3">
+                <label asp-for="StoreId" class="form-label"></label>
+                <select asp-for="StoreId" class="form-select">
+                    <option value="1">Tienda 1</option>
+                    <option value="2">Tienda 2</option>
+                </select>
+                <span asp-validation-for="StoreId" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Agregar copia</button>
+                <a asp-action="Index" asp-route-filmId="@Model.FilmId" class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

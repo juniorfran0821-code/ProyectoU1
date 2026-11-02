@@ -1,0 +1,74 @@
+@model IEnumerable<ProyectoU1.Models.Pelicula>
+
+@{
+    ViewData["Title"] = "Catálogo de películas";
+    var usuario = Context.Session.ObtenerUsuario();
+}
+
+<h2 class="mb-4">Catálogo de películas</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No hay películas disponibles.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var pelicula in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@pelicula.Title</h5>
+                        <p class="card-text text-muted small">
+                            @(pelicula.Description?.Length > 100
+                                ? pelicula.Description[..100] + "..."
+                                : pelicula.Description)
+                        </p>
+                        <div class="d-flex flex-wrap gap-1 mb-2">
+                            @if (!string.IsNullOrEmpty(pelicula.Rating))
+                            {
+                                <span class="badge bg-secondary">@pelicula.Rating</span>
+                            }
+                            @if (pelicula.ReleaseYear.HasValue)
+                            {
+                                <span class="badge bg-light text-dark border">@pelicula.ReleaseYear</span>
+                            }
+                        </div>
+                        <p class="mb-1 small">
+                            Tarifa: <strong>$@pelicula.RentalRate</strong>
+                            &nbsp;|&nbsp;
+                            @pelicula.RentalDuration días
+                        </p>
+                        <p class="mb-0 small">
+                            @if (pelicula.CopiasDisponibles > 0)
+                            {
+                                <span class="text-success fw-bold">
+                                    @pelicula.CopiasDisponibles copia(s) disponible(s)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-bold">Sin copias disponibles</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="card-footer d-flex gap-2">
+                        <a asp-action="Detalle" asp-route-id="@pelicula.FilmId"
+                           class="btn btn-outline-primary btn-sm">Detalle</a>
+                        @if (usuario?.Rol == "Cliente" && pelicula.CopiasDisponibles > 0)
+                        {
+                            <form asp-controller="Alquiler" asp-action="Alquilar" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="filmId" value="@pelicula.FilmId" />
+                                <button type="submit" class="btn btn-success btn-sm">Alquilar</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@await Html.PartialAsync("_Paginacion")

@@ -1,0 +1,83 @@
+@model IEnumerable<ProyectoU1.Models.Alquiler>
+
+@{
+    ViewData["Title"] = "Mis alquileres";
+    var usuario = Context.Session.ObtenerUsuario();
+}
+
+<h2 class="mb-3">Mis alquileres</h2>
+<p class="text-muted">Cliente: <strong>@usuario?.Nombre</strong></p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No tiene alquileres registrados.
+        <a asp-controller="Peliculas" asp-action="Catalogo">Ver catálogo de películas.</a>
+    </div>
+}
+else
+{
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Película</th>
+                <th>Fecha de alquiler</th>
+                <th>Fecha de devolución</th>
+                <th class="text-center">Estado</th>
+                <th class="text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var alquiler in Model)
+            {
+                <tr>
+                    <td>#@alquiler.RentalId</td>
+                    <td>@alquiler.TituloPelicula</td>
+                    <td>@alquiler.RentalDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (alquiler.ReturnDate.HasValue)
+                        {
+                            @alquiler.ReturnDate.Value.ToString("dd/MM/yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-warning">Pendiente</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (alquiler.EstaDevuelto)
+                        {
+                            <span class="badge bg-success">Devuelto</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Activo</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (!alquiler.EstaDevuelto)
+                        {
+                            <form asp-action="Devolver" method="post" class="d-inline"
+                                  onsubmit="return confirm('¿Confirmar devolución de @alquiler.TituloPelicula?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="rentalId" value="@alquiler.RentalId" />
+                                <button type="submit" class="btn btn-success btn-sm">Devolver</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">—</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Peliculas" asp-action="Catalogo" class="btn btn-outline-primary mt-2">
+    Ver más películas
+</a>
+
+@await Html.PartialAsync("_Paginacion")
