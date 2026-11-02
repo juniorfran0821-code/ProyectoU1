@@ -16,7 +16,7 @@ Incluye inicio y cierre de sesión con Session, autorización por roles mediante
 - .NET 10 SDK
 - SQL Server con la base de datos **Sakila** ya instalada
 - SQL Server Management Studio (SSMS) o similar para ejecutar el script
-- Visual Studio compatible con .NET 10 (opcional, también se puede usar la línea de comandos)
+- Visual Studio compatible con .NET 10 
 
 ## Cómo ejecutarlo
 
