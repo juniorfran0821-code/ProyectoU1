@@ -37,7 +37,11 @@ Incluye inicio y cierre de sesión con Session, autorización por roles mediante
 
 4. **Ejecutar la aplicación**
 
-   Abrir en el navegador la dirección que indique la consola (por ejemplo `https://localhost:7106`). Al arrancar por primera vez, la aplicación crea los usuarios de prueba en la tabla `Usuarios`.
+   ```bash
+   F5 en Visual Studio
+   ```
+
+   Se abrira automaticamente el navegador. Al arrancar por primera vez, la aplicación crea los usuarios de prueba en la tabla `Usuarios`.
 
 ## Usuarios de prueba
 
