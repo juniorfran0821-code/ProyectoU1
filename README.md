@@ -32,7 +32,7 @@ Incluye inicio y cierre de sesión con Session, autorización por roles mediante
 3. **Revisar la cadena de conexión.** En `appsettings.json`, ajustar `SakilaConnection` si la instancia de SQL Server es distinta:
 
    ```json
-   "SakilaConnection": "Server=localhost;Database=sakila;Trusted_Connection=True;TrustServerCertificate=True;"
+   "SakilaConnection": "Server=.\\SQLEXPRESS;Database=sakila;Trusted_Connection=True;TrustServerCertificate=True;"
    ```
 
 4. **Ejecutar la aplicación**
